@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Real-Time Stock Prediction Dashboard</title>
+  <!-- Leverage Bootstrap for a clean and responsive design -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center">Real-Time Stock Prediction Dashboard</h1>
+    <form id="predictionForm" class="mt-4">
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label for="ticker">Select Stock Ticker</label>
+          <select id="ticker" name="ticker" class="form-control">
+            {% for ticker in tickers %}
+              <option value="{{ ticker.symbol }}">{{ ticker.symbol }} - {{ ticker.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="start_date">Start Date</label>
+          <input type="date" id="start_date" name="start_date" class="form-control" required>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="end_date">End Date</label>
+          <input type="date" id="end_date" name="end_date" class="form-control" required>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="days">Days to Predict</label>
+          <input type="number" id="days" name="days" class="form-control" value="30" required>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Predict</button>
+    </form>
+
+    <div class="mt-5">
+      <!-- This div will host our interactive Plotly graph -->
+      <div id="chart"></div>
+    </div>
+  </div>
+
+  <!-- AJAX-based dynamic updates to ensure real-time responsiveness -->
+  <script>
+    $(document).ready(function(){
+      $('#predictionForm').submit(function(e){
+        e.preventDefault();
+        var formData = {
+          ticker: $('#ticker').val(),
+          start_date: $('#start_date').val(),
+          end_date: $('#end_date').val(),
+          days: $('#days').val()
+        };
+
+        $.ajax({
+          url: '/predict',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(formData),
+          success: function(response) {
+            var graphJSON = response.graphJSON;
+            var parsedGraph = JSON.parse(graphJSON);
+            Plotly.newPlot('chart', parsedGraph.data, parsedGraph.layout);
+          },
+          error: function(xhr) {
+            alert('Error: ' + xhr.responseJSON.error);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
