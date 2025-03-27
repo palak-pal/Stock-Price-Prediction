@@ -1,0 +1,14 @@
+Flask
+yfinance
+requests
+scikit-learn
+pandas
+numpy
+plotly
+streamlit
+matplotlib
+tensorflow
+prophet
+tqdm
+lxml
+bs4
