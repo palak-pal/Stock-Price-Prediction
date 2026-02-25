@@ -43,6 +43,8 @@ A powerful Streamlit web application for predicting stock prices using multiple 
 
 4. Explore the predictions and download the results if needed
 
+5. Review : https://stock-price-prediction-1-x6lw.onrender.com/
+
 
 
 ## Requirements
